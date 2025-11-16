@@ -10,6 +10,8 @@ Claude Code CLI plugin for AI-assisted development with taew-py Ports & Adapters
 
 ## Strategic Background
 
+> For historical context and rationale behind architectural decisions, see [Architecture Decision Records (ADRs)](docs/adrs/README.md)
+
 ### Use Cases This Plugin Must Support
 
 1. **Application Development**

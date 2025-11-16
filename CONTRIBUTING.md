@@ -40,7 +40,18 @@ source ~/.bashrc  # or source ~/.zshrc
 
 You can verify that the Context7 integration is working by starting Claude Code in this project directory and asking it to confirm access to Python 3.14 and Claude Code CLI documentation.
 
-### 3. Install Dependencies
+### 3. Prerequisites
+
+**Python 3.12 or higher** is required for development tooling (scripts for ADR management, validation, etc.).
+
+Verify your Python version:
+```bash
+python3 --version  # Should show 3.12.x or higher
+```
+
+**Note**: While this plugin targets Python 3.14+ for application development with taew-py, the development scripts require Python 3.12+ (widely available on most systems). Later, these scripts may be rewritten using taew-py itself with uv for better integration.
+
+### 4. Install Dependencies
 
 ```bash
 # Add any project-specific setup steps here as the project evolves

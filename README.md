@@ -59,6 +59,10 @@ Understanding taew-py's architectural principles:
 - **Dynamic-first**: Dynamic wiring by default, static as deployment optimization
 - **CLI-first**: Easiest path to explore workflows, then extend to TUI/Web/etc.
 
+## Architecture
+
+For detailed rationale behind architectural decisions, see [Architecture Decision Records (ADRs)](docs/adrs/README.md). These documents capture the "why" behind design choices and enable Claude Code to answer questions about the project's evolution.
+
 ## Contributing
 
 Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, including how to configure the required Context7 API key for accessing up-to-date Python 3.14+ and Claude Code CLI documentation.
