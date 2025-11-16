@@ -40,6 +40,8 @@ source ~/.bashrc  # or source ~/.zshrc
 
 You can verify that the Context7 integration is working by starting Claude Code in this project directory and asking it to confirm access to Python 3.14 and Claude Code CLI documentation.
 
+**Known Issue**: You may see `"1 MCP server failed"` when exiting Claude Code. This is harmless - the Context7 MCP server writes startup messages to stderr, which Claude Code logs as an error. The server works perfectly (verify with `/mcp` command). This is a cosmetic issue that doesn't affect functionality.
+
 ### 3. Prerequisites
 
 **Python 3.12 or higher** is required for development tooling (scripts for ADR management, validation, etc.).
