@@ -17,6 +17,7 @@ ADRs serve several critical functions:
 |------------|-------|--------|
 | [ADR-0000](adr-0000-use-adrs-to-document-architecturally-significant-decisions.md) | Use ADRs to Document Architecturally Significant Decisions | Accepted |
 | [ADR-0001](adr-0001-use-ai-assisted-tooling-for-adr-creation.md) | Use AI-Assisted Tooling for ADR Creation | Accepted - Phase 1 (Skill) - 2025-01-16 |
+| [ADR-0002](adr-0002-create-claude-code-cli-plugin-for-taew-development.md) | Create Claude Code CLI Plugin for taew Development | Accepted |
 
 ---
 
