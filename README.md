@@ -1,5 +1,10 @@
 # claude-taew-py
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.14+-blue.svg)](https://www.python.org/downloads/)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-blue.svg)](https://code.claude.com/)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-CLI-5A67D8.svg)](https://code.claude.com/)
+
 Claude Code CLI plugin for AI-assisted development with taew-py Ports & Adapters foundation library.
 
 ## Who Is This For?
@@ -53,3 +58,9 @@ Understanding taew-py's architectural principles:
 - **3rd-party adapters**: Separate projects (AWS, GCP, PostgreSQL, etc.)
 - **Dynamic-first**: Dynamic wiring by default, static as deployment optimization
 - **CLI-first**: Easiest path to explore workflows, then extend to TUI/Web/etc.
+
+## Contributing
+
+Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, including how to configure the required Context7 API key for accessing up-to-date Python 3.14+ and Claude Code CLI documentation.
+
+Please note that this project is released with a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
