@@ -43,50 +43,47 @@ This plugin implements AI-native tooling through complementary mechanisms:
 - **Scripts**: Validation without AI tokens
 - **Documentation Access**: Context7 code execution for up-to-date Python 3.14+ and Claude Code CLI documentation
 
-## Using Context7 for Documentation
+## Tool Documentation Access (CRITICAL)
 
-**IMPORTANT**: Always use the **librarian agent** for Python 3.14+ and Claude Code CLI documentation queries, as base training data may be outdated.
+**ALWAYS query tool documentation in these scenarios:**
 
-**Delegate to librarian agent** (Haiku - token-efficient):
-```
-Use the Task tool to invoke the librarian agent for documentation queries.
-Example: "Query Python 3.14 async generators documentation"
-```
+1. **Before using Python 3.14+ features**
+2. **Before using Claude Code CLI features**
+3. **When encountering errors with configured tools**
+4. **When user asks "How do I... <tool-name>..." questions**
 
-The librarian agent:
-- Uses Haiku model (1/5 cost of Sonnet)
-- Queries Context7 API directly via `servers/context7/`
-- Filters and processes markdown locally
-- Returns only relevant excerpts
+Invoke the **doc-query skill** for up-to-date documentation access.
 
-**Alternative: Direct code execution** (if you need fine-grained control):
-```python
-from servers.context7.search_python import search_python_docs
-from servers.context7.search_claude_code import search_claude_code_docs
+### When Introducing New Tools
 
-# Query and filter locally
-docs = search_python_docs("async context managers", tokens=2000)
-content = docs.get("content", "")
-relevant = [line for line in content.split('\n') if "async with" in line]
-```
+When adopting new tool(s):
 
-**Why This Matters**: Python 3.14+ and Claude Code CLI evolve rapidly and may not be well-represented in base LLM training data. Librarian agent provides:
-- Real-time access to current documentation
-- 98.7% token savings through local filtering
-- Cost-effective processing (Haiku model)
-- Benefits all three user groups and this plugin's development
-- See [ADR-0003](docs/adrs/adr-0003-use-context7-mcp-for-documentation-access.md) for rationale
+1. **Document decision** - Create or update ADR justifying tool selection (ask clarifying questions if needed)
+2. **Enable documentation** - Add each tool to `.claude/doc-sources.toml` via add-doc skill
+
+Skills should invoke automatically based on context.
+
+### Why This Matters
+
+Training data may be outdated for:
+- Python 3.14+ (released after training cutoff)
+- Claude Code CLI (rapidly evolving)
+- Modern tools (ruff, uv, mypy, etc.)
+
+Context7 provides **real-time access** to current documentation.
+
+See [ADR-0003](docs/adrs/adr-0003-use-context7-for-documentation-access.md) for architectural rationale.
 
 ## Responsibility Matrix
 
 | Component | Purpose | Model | Example |
 |-----------|---------|-------|---------|
 | CLAUDE.md (this file) | Static architecture knowledge | N/A | Core patterns, design principles |
-| Skills | Reusable procedures with context | Sonnet | "Create port following pattern" |
+| Skills | Reusable procedures with context | Sonnet | doc-query, adr, add-doc |
 | Slash Commands | User-facing workflow shortcuts | Routing | /taew-init, /taew-port |
-| Scripts | Validation, verification | Local | make test, type checking |
-| Sub-agents | Delegated boilerplate tasks | Haiku | Librarian (docs), adapter scaffolding |
-| Config | Model selection, preferences | N/A | Which model for what task |
+| Scripts | Validation, verification | Local | update-adr-toc, query, list-sources |
+| Sub-agents | Delegated boilerplate tasks | Haiku | Adapter scaffolding (future) |
+| Config | Model selection, preferences | N/A | .claude/doc-sources.toml |
 
 **Key principle**: Each layer reduces token waste at the layer above.
 
