@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""
+List available documentation sources from .claude/doc-sources.toml.
+
+Usage:
+    list-sources [--verbose]
+"""
+
+import sys
+from pathlib import Path
+
+# Add lib to path
+lib_dir = Path(__file__).parent.parent / "lib"
+sys.path.insert(0, str(lib_dir))
+
+from context7_client import load_doc_sources, Context7Error
+
+
+def main() -> None:
+    """Main entry point."""
+    verbose = "--verbose" in sys.argv or "-v" in sys.argv
+
+    try:
+        sources = load_doc_sources()
+
+        if not sources:
+            print("No documentation sources configured.", file=sys.stderr)
+            print("\nRun 'add-doc' skill to add sources.", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"Available documentation sources ({len(sources)}):\n")
+
+        for name, config in sorted(sources.items()):
+            print(f"  {name}")
+
+            if verbose:
+                print(f"    Context7 ID: {config['context7_id']}")
+                print(f"    Description: {config['description']}")
+                print(f"    Default tokens: {config.get('default_tokens', 2500)}")
+
+                aliases = config.get("aliases", [])
+                if aliases:
+                    print(f"    Aliases: {', '.join(aliases)}")
+
+                added_by = config.get("added_by")
+                if added_by:
+                    print(f"    Added by: {added_by}")
+
+                print()
+
+    except Context7Error as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

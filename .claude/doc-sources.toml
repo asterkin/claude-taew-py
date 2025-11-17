@@ -1,0 +1,25 @@
+# Documentation Sources Configuration
+#
+# This file maps tools and technologies to their Context7 documentation sources.
+# Used by doc-query skill for accessing up-to-date documentation.
+# Managed by add-doc skill when new tools are adopted.
+#
+# Format:
+#   [sources.<tool-name>]
+#   context7_id = "websites/<tool>" or "github/<org>/<repo>"
+#   description = "Brief description"
+#   default_tokens = 2500  # Default token limit for queries
+#   aliases = ["alias1", "alias2"]  # Alternative names
+#   added_by = "ADR-NNNN"  # Optional: link to decision record
+
+[sources.python]
+context7_id = "websites/python_3_14"
+description = "Python 3.14+ standard library and language features"
+default_tokens = 3000
+aliases = ["py", "python3"]
+
+[sources.claude-code]
+context7_id = "websites/code_claude"
+description = "Claude Code CLI - skills, agents, hooks, MCP integration"
+default_tokens = 2500
+aliases = ["claude", "cli"]

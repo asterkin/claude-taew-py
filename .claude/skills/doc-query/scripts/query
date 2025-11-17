@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+"""
+Query documentation from configured sources using Context7.
+
+Usage:
+    query <source> "<topic>" [tokens]
+
+Examples:
+    query python "async context managers"
+    query claude-code "create skill" 2000
+    query py "type hints"
+"""
+
+import sys
+from pathlib import Path
+
+# Add lib to path
+lib_dir = Path(__file__).parent.parent / "lib"
+sys.path.insert(0, str(lib_dir))
+
+from context7_client import query_documentation, Context7Error
+
+
+def main() -> None:
+    """Main entry point."""
+    if len(sys.argv) < 3:
+        print(__doc__, file=sys.stderr)
+        sys.exit(1)
+
+    source = sys.argv[1]
+    topic = sys.argv[2]
+    tokens = int(sys.argv[3]) if len(sys.argv) > 3 else None
+
+    try:
+        result = query_documentation(source, topic, tokens)
+        print(result["content"])
+    except Context7Error as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
