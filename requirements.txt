@@ -1,0 +1,6 @@
+# Development dependencies for claude-taew-py plugin
+#
+# Python 3.12+ required (see CONTRIBUTING.md)
+#
+# Currently no external dependencies - all code uses Python stdlib only.
+# This file is kept for future dependencies as the project evolves.

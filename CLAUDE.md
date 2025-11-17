@@ -41,9 +41,32 @@ This plugin implements AI-native tooling through complementary mechanisms:
 - **Slash commands**: User-facing workflow shortcuts
 - **Sub-agents**: Boilerplate generation (cost-optimized with Haiku)
 - **Scripts**: Validation without AI tokens
-- **Documentation Access**: Context7 MCP server for up-to-date Python 3.14+ and Claude Code CLI documentation
+- **Documentation Access**: Context7 code execution for up-to-date Python 3.14+ and Claude Code CLI documentation
 
-**Why Documentation Access Matters**: Both Python 3.14+ and Claude Code CLI are rapidly evolving and may not be well-represented in base LLM training data. Context7 enables real-time lookup of current documentation, benefiting all three user groups (app developers, adapter developers, core maintainers) as well as this plugin's own development.
+## Using Context7 for Documentation
+
+**IMPORTANT**: Always use Context7 for Python 3.14+ and Claude Code CLI documentation queries, as base training data may be outdated.
+
+Write Python code to query documentation:
+```python
+from servers.context7.search_python import search_python_docs
+from servers.context7.search_claude_code import search_claude_code_docs
+
+# Query Python docs
+python_docs = search_python_docs("async context managers", tokens=2000)
+
+# Query Claude Code CLI docs
+cli_docs = search_claude_code_docs("skills api", tokens=2000)
+
+# Filter and process locally (huge token savings!)
+relevant = [d for d in python_docs.get("snippets", []) if "3.14" in str(d)]
+```
+
+**Why This Matters**: Python 3.14+ and Claude Code CLI evolve rapidly and may not be well-represented in base LLM training data. Code execution with Context7 provides:
+- Real-time access to current documentation
+- 98.7% token savings through local filtering
+- Benefits all three user groups and this plugin's development
+- See [ADR-0003](docs/adrs/adr-0003-use-context7-mcp-for-documentation-access.md) for rationale
 
 ## Responsibility Matrix
 

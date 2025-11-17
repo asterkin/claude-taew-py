@@ -38,9 +38,15 @@ source ~/.bashrc  # or source ~/.zshrc
 
 #### Verify Configuration
 
-You can verify that the Context7 integration is working by starting Claude Code in this project directory and asking it to confirm access to Python 3.14 and Claude Code CLI documentation.
+You can verify that the Context7 integration is working by writing Python code to query documentation:
 
-**Known Issue**: You may see `"1 MCP server failed"` when exiting Claude Code. This is harmless - the Context7 MCP server writes startup messages to stderr, which Claude Code logs as an error. The server works perfectly (verify with `/mcp` command). This is a cosmetic issue that doesn't affect functionality.
+```python
+from servers.context7.search_python import search_python_docs
+
+# Test query
+results = search_python_docs("async generators", tokens=1000)
+print(results)
+```
 
 ### 3. Prerequisites
 
@@ -55,9 +61,9 @@ python3 --version  # Should show 3.12.x or higher
 
 ### 4. Install Dependencies
 
-```bash
-# Add any project-specific setup steps here as the project evolves
-```
+Currently no external dependencies are required - all code uses Python 3.12+ stdlib only (urllib for HTTP requests, etc.).
+
+The `requirements.txt` file is kept for future dependencies as the project evolves.
 
 ## Development Workflow
 
