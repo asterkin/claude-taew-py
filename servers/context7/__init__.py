@@ -98,8 +98,9 @@ def _call_context7(
     # Make request
     try:
         with urlopen(request, timeout=30) as response:
-            data = response.read()
-            return json.loads(data)
+            data = response.read().decode('utf-8')
+            # Context7 returns plain text markdown, not JSON
+            return {"content": data, "library": library, "version": version, "topic": topic}
 
     except HTTPError as e:
         # Handle HTTP error responses

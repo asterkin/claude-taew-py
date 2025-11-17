@@ -20,25 +20,27 @@ def search_python_docs(topic: str, tokens: int = 5000) -> Dict[str, Any]:
 
     Returns:
         Documentation results as dictionary containing:
-        - snippets: List of relevant code examples and documentation
-        - metadata: Source information and relevance scores
+        - content: Plain text markdown documentation
+        - library: Library identifier
+        - topic: Search topic
+        - version: Version requested (if any)
 
     Example:
         >>> # Agent writes code to query and filter locally
         >>> results = search_python_docs("async context managers", tokens=2000)
         >>>
         >>> # Filter results locally (massive token savings!)
-        >>> relevant = [
-        ...     snippet for snippet in results.get("snippets", [])
-        ...     if "async with" in snippet.get("content", "")
-        ... ]
+        >>> content = results.get("content", "")
+        >>> if "async with" in content.lower():
+        ...     print(content[:500])  # Show first 500 chars
         >>>
-        >>> # Return only what's needed
-        >>> return relevant[:3]
+        >>> # Process markdown locally
+        >>> lines = content.split('\n')
+        >>> relevant_lines = [l for l in lines if "async" in l.lower()][:10]
 
     Raises:
         Context7AuthError: Invalid or missing API key
         Context7NotFoundError: Python docs not found
         Context7RateLimitError: Rate limit exceeded
     """
-    return _call_context7("python", version="3.14", topic=topic, tokens=tokens)
+    return _call_context7("websites/python_3_14", topic=topic, tokens=tokens)

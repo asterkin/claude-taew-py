@@ -20,18 +20,18 @@ def search_claude_code_docs(topic: str, tokens: int = 5000) -> Dict[str, Any]:
 
     Returns:
         Documentation results as dictionary containing:
-        - snippets: List of relevant documentation and examples
-        - metadata: Source information and relevance scores
+        - content: Plain text markdown documentation
+        - library: Library identifier
+        - topic: Search topic
 
     Example:
         >>> # Agent writes code to find MCP server documentation
         >>> results = search_claude_code_docs("mcp server", tokens=3000)
         >>>
-        >>> # Extract only installation steps locally
-        >>> install_steps = [
-        ...     snippet for snippet in results.get("snippets", [])
-        ...     if "install" in snippet.get("content", "").lower()
-        ... ]
+        >>> # Process markdown locally (huge token savings!)
+        >>> content = results.get("content", "")
+        >>> lines = content.split('\n')
+        >>> install_steps = [l for l in lines if "install" in l.lower()]
         >>>
         >>> return install_steps
 
@@ -40,4 +40,4 @@ def search_claude_code_docs(topic: str, tokens: int = 5000) -> Dict[str, Any]:
         Context7NotFoundError: Claude Code docs not found
         Context7RateLimitError: Rate limit exceeded
     """
-    return _call_context7("claude-code", topic=topic, tokens=tokens)
+    return _call_context7("websites/code_claude", topic=topic, tokens=tokens)
