@@ -1,6 +1,6 @@
 # ADR-0003: Use Context7 for Documentation Access
 
-**Status:** Accepted - Evolved to Code Execution Approach (2025-01-16)
+**Status:** Accepted - Implemented as Skills with TOML Configuration (2025-01-17)
 
 ## Context
 
@@ -79,60 +79,89 @@ The Model Context Protocol (MCP) enables AI assistants to access real-time exter
 
 ## Decision
 
-Use **Context7** to provide real-time access to up-to-date documentation for Python 3.14+ and Claude Code CLI through **code execution** rather than traditional MCP server communication.
+Use **Context7** to provide real-time access to up-to-date documentation for Python 3.14+ and Claude Code CLI through **Skills with TOML-based configuration**.
 
 ### Implementation Evolution
 
-**Initial Approach (MCP Server):**
+**Phase 1 (MCP Server):**
 - Used Context7 MCP server via npx (@upstash/context7-mcp)
 - Separate process communication via stdio
 - Issue: Server wrote startup messages to stderr (false positive error)
 
-**Current Approach (Code Execution):**
+**Phase 2 (Code Execution):**
 - Direct API calls via Python code
-- Agent writes Python to query and process documentation locally
-- **98.7% token savings** through local filtering and processing
-- Based on [Anthropic's code execution research](https://www.anthropic.com/engineering/code-execution-with-mcp)
+- Agent wrote Python to query and process documentation locally
+- Issue: Confused user intent (skill invocation vs code generation)
 
-### Code Execution Structure
+**Phase 3 (Skills - Final):**
+- **doc-query skill**: Query documentation from configured sources
+- **add-doc skill**: Add new documentation sources to configuration
+- **TOML-based configuration** (`.claude/doc-sources.toml`)
+- **Token-efficient**: 0 Sonnet tokens for queries (local Python script execution)
 
-**`servers/context7/` directory:**
+### Skills-Based Architecture
+
+**Directory Structure:**
 ```
-servers/
-└── context7/
-    ├── __init__.py               # Base API client
-    ├── search_python.py          # Python 3.14+ docs
-    ├── search_claude_code.py     # Claude Code CLI docs
-    └── get_library.py            # Generic library docs
+.claude/
+├── doc-sources.toml              # TOML configuration mapping tools to Context7 IDs
+├── skills/
+│   ├── doc-query/                # Query documentation
+│   │   ├── SKILL.md
+│   │   ├── lib/
+│   │   │   ├── __init__.py
+│   │   │   ├── context7_client.py    # Generic Context7 API client
+│   │   │   └── get_library.py        # Library resolution
+│   │   └── scripts/
+│   │       ├── query                  # Query documentation
+│   │       └── list-sources           # List available sources
+│   └── add-doc/                  # Add documentation sources
+│       ├── SKILL.md
+│       ├── scripts/
+│       │   └── add-source            # Add new source to TOML
+│       └── templates/
+│           └── source-entry.toml     # TOML entry template
 ```
 
-**Agent Usage Example:**
-```python
-from servers.context7.search_python import search_python_docs
+**Configuration Example (`.claude/doc-sources.toml`):**
+```toml
+[sources.python]
+context7_id = "websites/python_3_14"
+description = "Python 3.14+ standard library and language features"
+default_tokens = 3000
+aliases = ["py", "python3"]
 
-# Agent writes code to query and filter locally (huge token savings!)
-results = search_python_docs("async context managers", tokens=2000)
+[sources.claude-code]
+context7_id = "websites/code_claude"
+description = "Claude Code CLI - skills, agents, hooks, MCP integration"
+default_tokens = 2500
+aliases = ["claude", "cli"]
+```
 
-# Filter locally instead of passing all data through model
-relevant = [
-    snippet for snippet in results.get("snippets", [])
-    if "async with" in snippet.get("content", "")
-]
+**Skill Usage Examples:**
 
-# Return only what's needed
-return relevant[:3]
+**Query documentation:**
+```bash
+.claude/skills/doc-query/scripts/query python "async context managers"
+.claude/skills/doc-query/scripts/query claude-code "create skill" 2000
+.claude/skills/doc-query/scripts/list-sources
+```
+
+**Add new documentation source:**
+```bash
+.claude/skills/add-doc/scripts/add-source ruff websites/ruff "Ruff Python linter" --tokens 2000 --alias ruff-lint
 ```
 
 **Documentation Sources:**
-- `python`: Official Python 3.14+ documentation
-- `claude-code`: Official Claude Code CLI documentation
-- Any library supported by Context7 (via `get_library_docs`)
+- Configured via `.claude/doc-sources.toml` (extensible for any Context7 library)
+- Initial sources: `python` (Python 3.14+), `claude-code` (Claude Code CLI)
+- Add more sources via add-doc skill (ruff, mypy, pytest, etc.)
 
 **Integration Points:**
-- Agent writes Python code dynamically to query documentation
-- Local filtering and processing (loops, conditionals, data transformations)
+- Skills invoked explicitly by Sonnet agent
+- Scripts execute locally (Python 3.12+ stdlib only - urllib, tomllib, pathlib)
 - Progressive disclosure: query only when needed
-- Token-efficient: returns filtered results, not raw data
+- Token-efficient: 0 Sonnet tokens (local script execution)
 
 ### Setup Requirements
 
@@ -142,10 +171,11 @@ return relevant[:3]
 3. No external dependencies required - uses Python 3.12+ stdlib only (urllib)
 
 **Token Economics:**
-- Code execution approach achieves **98.7% token savings** vs traditional MCP
-- Agent filters/processes documentation locally before returning results
+- Skills approach achieves **0 Sonnet tokens** for documentation queries
+- Local Python script execution (pre-approved permissions)
 - More efficient than:
   - Traditional MCP (all data passes through model)
+  - Sub-agents with Haiku (still consumes tokens for filtering)
   - AI hallucinating outdated information (requires correction/rework)
   - User manually looking up and pasting documentation (context switching)
   - Embedding full docs in prompts (massive token waste)
@@ -159,19 +189,21 @@ return relevant[:3]
 3. **Seamless Workflow**: Documentation lookup happens in-context, no browser switching
 4. **Always Current**: Documentation updates don't require plugin releases
 5. **Version-Specific**: Can access docs for specific Python/library versions
-6. **Massive Token Savings**: 98.7% reduction through local filtering and processing (code execution vs traditional MCP)
-7. **Agent Control**: Dynamic filtering, loops, conditionals without alternating model calls
+6. **Zero Sonnet Tokens**: 0 tokens for documentation queries (local script execution with pre-approved permissions)
+7. **Skills Composition**: Explicit skill invocation (no "magic" hooks), follows Claude Code patterns
 8. **Multi-Source**: Can query Python, Claude Code, and any Context7-supported library
-9. **No stderr Issues**: Eliminated false positive errors from MCP server process
-10. **No External Dependencies**: Uses Python 3.12+ stdlib only (urllib) - aligns with taew-py philosophy
+9. **Extensible**: TOML-based configuration - add new sources via add-doc skill
+10. **No External Dependencies**: Uses Python 3.12+ stdlib only (urllib, tomllib, pathlib) - aligns with taew-py philosophy
+11. **Skill Encapsulation**: Self-contained skills with scripts/lib/templates in dedicated directories
+12. **Alias Support**: Convenient short names (py → python, claude → claude-code)
 
 ### Negative
 
 1. **External Dependency**: Requires Context7 service availability
 2. **API Key Required**: Contributors must sign up and configure key (friction in setup)
 3. **Network Dependency**: Offline development loses documentation access
-4. **Token Cost**: Documentation queries still consume tokens (but 98.7% less than traditional MCP)
-5. **Service Risk**: Dependent on Context7 service continuity and pricing
+4. **Service Risk**: Dependent on Context7 service continuity and pricing
+5. **Manual Source Discovery**: Must browse Context7 to find library IDs (not searchable via API)
 
 ### Neutral
 
@@ -230,9 +262,10 @@ Not implementing now (YAGNI), but architecture allows for future enhancement.
 
 ## References
 
-- [CLAUDE.md - Documentation Access](../../CLAUDE.md#ai-native-implementation)
-- [CONTRIBUTING.md - Context7 Setup](../../CONTRIBUTING.md#2-configure-context7-api-key)
-- [.mcp.json - Configuration](../../.mcp.json)
-- [Context7 MCP Server](https://github.com/upstash/context7-mcp)
+- [CLAUDE.md - Tool Documentation Access](../../CLAUDE.md#tool-documentation-access-critical)
+- [.claude/doc-sources.toml](../../.claude/doc-sources.toml) - Documentation sources configuration
+- [doc-query skill](../../.claude/skills/doc-query/SKILL.md) - Query documentation
+- [add-doc skill](../../.claude/skills/add-doc/SKILL.md) - Add documentation sources
+- [Context7](https://context7.com) - Documentation provider
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [ADR-0002: Create Claude Code CLI Plugin](adr-0002-create-claude-code-cli-plugin-for-taew-development.md) - Establishes need for up-to-date documentation access

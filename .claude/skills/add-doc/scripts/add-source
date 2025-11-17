@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""
+Add a new documentation source to .claude/doc-sources.toml.
+
+Usage:
+    add-source <name> <context7_id> <description> [--tokens N] [--alias A1,A2,...]
+
+Examples:
+    add-source ruff websites/ruff "Ruff Python linter and formatter" --tokens 2000 --alias ruff-lint
+    add-source mypy websites/mypy "Mypy static type checker for Python"
+"""
+
+import sys
+import tomllib
+from pathlib import Path
+
+
+class AddSourceError(Exception):
+    """Base exception for add-source errors."""
+    pass
+
+
+def find_claude_dir() -> Path:
+    """Find .claude directory relative to this script."""
+    script_dir = Path(__file__).resolve().parent
+    # Navigate up: scripts/ -> add-doc/ -> skills/ -> .claude/
+    claude_dir = script_dir.parent.parent.parent
+    if not claude_dir.name == ".claude":
+        raise AddSourceError(
+            f"Expected .claude directory, found: {claude_dir.name}"
+        )
+    return claude_dir
+
+
+def load_existing_sources(config_path: Path) -> dict[str, dict]:
+    """Load existing documentation sources."""
+    if not config_path.exists():
+        return {}
+
+    with open(config_path, "rb") as f:
+        config = tomllib.load(f)
+        return config.get("sources", {})
+
+
+def validate_source_name(name: str, existing_sources: dict[str, dict]) -> None:
+    """Validate source name doesn't conflict with existing sources."""
+    if name in existing_sources:
+        raise AddSourceError(f"Source '{name}' already exists")
+
+    # Check for alias conflicts
+    for source_name, source_config in existing_sources.items():
+        aliases = source_config.get("aliases", [])
+        if name in aliases:
+            raise AddSourceError(
+                f"Name '{name}' conflicts with alias for '{source_name}'"
+            )
+
+
+def validate_aliases(
+    aliases: list[str],
+    existing_sources: dict[str, dict]
+) -> None:
+    """Validate aliases don't conflict with existing sources or aliases."""
+    for alias in aliases:
+        # Check source name conflicts
+        if alias in existing_sources:
+            raise AddSourceError(
+                f"Alias '{alias}' conflicts with existing source"
+            )
+
+        # Check alias conflicts
+        for source_name, source_config in existing_sources.items():
+            existing_aliases = source_config.get("aliases", [])
+            if alias in existing_aliases:
+                raise AddSourceError(
+                    f"Alias '{alias}' already used by '{source_name}'"
+                )
+
+
+def format_toml_entry(
+    name: str,
+    context7_id: str,
+    description: str,
+    tokens: int | None,
+    aliases: list[str]
+) -> str:
+    """Format TOML entry for new source."""
+    lines = [
+        f"[sources.{name}]",
+        f'context7_id = "{context7_id}"',
+        f'description = "{description}"',
+    ]
+
+    if tokens is not None:
+        lines.append(f"default_tokens = {tokens}")
+
+    if aliases:
+        # Format as TOML array
+        aliases_str = ", ".join(f'"{alias}"' for alias in aliases)
+        lines.append(f"aliases = [{aliases_str}]")
+
+    return "\n".join(lines)
+
+
+def append_source_to_config(
+    config_path: Path,
+    entry: str
+) -> None:
+    """Append new source entry to config file."""
+    # Read existing content
+    if config_path.exists():
+        with open(config_path, "r") as f:
+            content = f.read()
+
+        # Ensure trailing newline before appending
+        if content and not content.endswith("\n"):
+            content += "\n"
+    else:
+        # Create new file with header
+        content = "# Documentation Sources Configuration\n"
+
+    # Append new entry
+    content += f"\n{entry}\n"
+
+    # Write back
+    with open(config_path, "w") as f:
+        f.write(content)
+
+
+def parse_args() -> tuple[str, str, str, int | None, list[str]]:
+    """Parse command-line arguments."""
+    if len(sys.argv) < 4:
+        print(__doc__, file=sys.stderr)
+        sys.exit(1)
+
+    name = sys.argv[1]
+    context7_id = sys.argv[2]
+    description = sys.argv[3]
+
+    # Parse optional arguments
+    tokens = None
+    aliases = []
+
+    i = 4
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+
+        if arg == "--tokens":
+            if i + 1 >= len(sys.argv):
+                raise AddSourceError("--tokens requires a value")
+            tokens = int(sys.argv[i + 1])
+            i += 2
+        elif arg == "--alias":
+            if i + 1 >= len(sys.argv):
+                raise AddSourceError("--alias requires a value")
+            # Split comma-separated aliases
+            aliases = [a.strip() for a in sys.argv[i + 1].split(",")]
+            i += 2
+        else:
+            raise AddSourceError(f"Unknown argument: {arg}")
+
+    return name, context7_id, description, tokens, aliases
+
+
+def main() -> None:
+    """Main entry point."""
+    try:
+        # Parse arguments
+        name, context7_id, description, tokens, aliases = parse_args()
+
+        # Find config file
+        claude_dir = find_claude_dir()
+        config_path = claude_dir / "doc-sources.toml"
+
+        # Load and validate
+        existing_sources = load_existing_sources(config_path)
+        validate_source_name(name, existing_sources)
+        validate_aliases(aliases, existing_sources)
+
+        # Format entry
+        entry = format_toml_entry(name, context7_id, description, tokens, aliases)
+
+        # Append to config
+        append_source_to_config(config_path, entry)
+
+        # Success message
+        print(f"✓ Added documentation source: {name}")
+        print(f"  Context7 ID: {context7_id}")
+        print(f"  Description: {description}")
+        if tokens:
+            print(f"  Default tokens: {tokens}")
+        if aliases:
+            print(f"  Aliases: {', '.join(aliases)}")
+        print(f"\nUpdated: {config_path}")
+
+    except AddSourceError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

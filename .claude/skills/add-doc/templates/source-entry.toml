@@ -1,0 +1,29 @@
+# Documentation Source Entry Template
+#
+# This template shows the format for adding a new documentation source
+# to .claude/doc-sources.toml.
+#
+# You can either:
+# 1. Use the add-source script (recommended):
+#    .claude/skills/add-doc/scripts/add-source <name> <context7_id> <description> [options]
+#
+# 2. Manually copy this template to doc-sources.toml and fill in the values
+
+[sources.TOOL_NAME]
+# The Context7 library identifier for this documentation source
+# Find this by browsing Context7's available libraries at https://context7.com
+context7_id = "websites/LIBRARY_ID"
+
+# Human-readable description of what this documentation covers
+description = "Brief description of the tool and what documentation it provides"
+
+# Optional: Default number of tokens to retrieve (default: 2500 if omitted)
+# Adjust based on documentation size and typical query needs
+default_tokens = 2500
+
+# Optional: Alternative names for this source (default: none)
+# Useful for common abbreviations or variations
+aliases = ["short-name", "alt-name"]
+
+# Optional: How this source was added (automatically populated by add-source script)
+# added_by = "add-doc skill"
