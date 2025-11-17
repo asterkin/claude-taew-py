@@ -90,6 +90,42 @@ relevant = [line for line in content.split('\n') if "async with" in line]
 
 **Key principle**: Each layer reduces token waste at the layer above.
 
+## Python Code Standards
+
+When writing Python code for this project:
+
+### 1. Type Hints - Use Modern Built-in Types (Python 3.9+)
+- ✅ `list[str]`, `dict[str, int]`, `tuple[int, ...]`
+- ❌ `List[str]`, `Dict[str, int]`, `Tuple[int, ...]` (typing module imports)
+- ✅ `str | None`
+- ❌ `Optional[str]`
+
+### 2. Prefer Comprehensions Over Imperative Loops
+- ✅ `[x for x in items if condition]`
+- ❌ `result = []; for x in items: if condition: result.append(x)`
+
+### 3. Type Safety - Code Must Pass Pylance Strict Mode
+- Always type comparison method parameters: `def __lt__(self, other: object) -> bool:`
+- Use type guards: `if isinstance(other, MyClass):`
+- Return `NotImplemented` for comparison operators when types don't match
+- Explicit type narrowing: Use `if x is not None:` instead of `if x:`
+
+### 4. Executable Scripts - Mark with Shebang + chmod
+- Start with: `#!/usr/bin/env python3`
+- Make executable: `chmod +x script.py`
+- Invoke as: `./script.py` (not `python script.py`)
+- Rationale: Self-documenting, portable, consistent with hooks
+
+### 5. Encapsulation - Keep Utilities with Their Consumers
+- ✅ `.claude/skills/my-skill/scripts/helper.py`
+- ❌ `scripts/my-skill-helper.py` (pollutes project root)
+- Rationale: Skills are self-contained, portable modules
+
+### 6. Templates - Extract Formatting from Logic
+- Use separate template files for formatted outputs
+- Keep business logic in Python, presentation in templates
+- Example: `.claude/skills/adr/templates/adr-template.md`
+
 ## Project Structure Philosophy
 
 This plugin should mirror taew-py's philosophy at the meta-level:

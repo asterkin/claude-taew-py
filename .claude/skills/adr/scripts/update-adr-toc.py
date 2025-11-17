@@ -13,7 +13,6 @@ import re
 import sys
 from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Optional
 
 
 @dataclass
@@ -24,12 +23,14 @@ class ADR:
     title: str
     status: str
 
-    def __lt__(self, other):
+    def __lt__(self, other: object) -> bool:
         """Sort ADRs by number."""
+        if not isinstance(other, ADR):
+            return NotImplemented
         return self.number < other.number
 
 
-def extract_adr_metadata(adr_file: Path) -> Optional[ADR]:
+def extract_adr_metadata(adr_file: Path) -> ADR | None:
     """
     Extract metadata from an ADR file.
 
@@ -75,7 +76,7 @@ def extract_adr_metadata(adr_file: Path) -> Optional[ADR]:
         return None
 
 
-def find_adrs(adrs_dir: Path) -> List[ADR]:
+def find_adrs(adrs_dir: Path) -> list[ADR]:
     """
     Find and parse all ADR files in the directory.
 
@@ -85,16 +86,16 @@ def find_adrs(adrs_dir: Path) -> List[ADR]:
     Returns:
         Sorted list of ADR objects
     """
-    adrs = []
+    adrs: list[ADR] = []
     for adr_file in adrs_dir.glob('adr-*.md'):
         adr = extract_adr_metadata(adr_file)
-        if adr:
+        if adr is not None:
             adrs.append(adr)
 
     return sorted(adrs)
 
 
-def generate_table(adrs: List[ADR]) -> str:
+def generate_table(adrs: list[ADR]) -> str:
     """
     Generate the markdown table of contents.
 
@@ -150,9 +151,12 @@ def update_readme(readme_path: Path, new_table: str) -> None:
 
 def main():
     """Main entry point."""
-    # Determine project root (script is in scripts/, root is parent)
+    # Determine project root (script is in .claude/skills/adr/scripts/)
     script_dir = Path(__file__).parent
-    project_root = script_dir.parent
+    skill_dir = script_dir.parent  # .claude/skills/adr
+    claude_dir = skill_dir.parent  # .claude/skills
+    claude_root = claude_dir.parent  # .claude
+    project_root = claude_root.parent  # project root
 
     adrs_dir = project_root / 'docs' / 'adrs'
     readme_path = adrs_dir / 'README.md'

@@ -23,7 +23,7 @@ Invoke this skill when:
 
 ### Step 2: Create ADR File
 
-1. Use the template below
+1. Use the template below (also available at `.claude/skills/adr/templates/adr-template.md`)
 2. Name the file: `adr-NNNN-brief-descriptive-title.md`
 3. Place in: `docs/adrs/`
 
@@ -32,7 +32,7 @@ Invoke this skill when:
 **Option A (Automated - Preferred):**
 Run the TOC update script:
 ```bash
-python scripts/update-adr-toc.py
+.claude/skills/adr/scripts/update-adr-toc.py
 ```
 
 **Option B (Manual):**
