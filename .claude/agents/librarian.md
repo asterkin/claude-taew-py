@@ -1,10 +1,7 @@
 ---
-description: Query Python 3.14+ and Claude Code CLI documentation using Context7
-capabilities:
-  - Query Python 3.14+ documentation for current features and APIs
-  - Query Claude Code CLI documentation for skills, MCP, and tooling
-  - Filter and extract relevant documentation snippets
-  - Process markdown documentation locally for token efficiency
+name: librarian
+description: Query Python 3.14+ and Claude Code CLI documentation using Context7. Use when you need current documentation for Python 3.14+ or Claude Code CLI features.
+tools: Bash
 model: haiku
 ---
 
