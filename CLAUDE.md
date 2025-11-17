@@ -45,26 +45,35 @@ This plugin implements AI-native tooling through complementary mechanisms:
 
 ## Using Context7 for Documentation
 
-**IMPORTANT**: Always use Context7 for Python 3.14+ and Claude Code CLI documentation queries, as base training data may be outdated.
+**IMPORTANT**: Always use the **librarian agent** for Python 3.14+ and Claude Code CLI documentation queries, as base training data may be outdated.
 
-Write Python code to query documentation:
+**Delegate to librarian agent** (Haiku - token-efficient):
+```
+Use the Task tool to invoke the librarian agent for documentation queries.
+Example: "Query Python 3.14 async generators documentation"
+```
+
+The librarian agent:
+- Uses Haiku model (1/5 cost of Sonnet)
+- Queries Context7 API directly via `servers/context7/`
+- Filters and processes markdown locally
+- Returns only relevant excerpts
+
+**Alternative: Direct code execution** (if you need fine-grained control):
 ```python
 from servers.context7.search_python import search_python_docs
 from servers.context7.search_claude_code import search_claude_code_docs
 
-# Query Python docs
-python_docs = search_python_docs("async context managers", tokens=2000)
-
-# Query Claude Code CLI docs
-cli_docs = search_claude_code_docs("skills api", tokens=2000)
-
-# Filter and process locally (huge token savings!)
-relevant = [d for d in python_docs.get("snippets", []) if "3.14" in str(d)]
+# Query and filter locally
+docs = search_python_docs("async context managers", tokens=2000)
+content = docs.get("content", "")
+relevant = [line for line in content.split('\n') if "async with" in line]
 ```
 
-**Why This Matters**: Python 3.14+ and Claude Code CLI evolve rapidly and may not be well-represented in base LLM training data. Code execution with Context7 provides:
+**Why This Matters**: Python 3.14+ and Claude Code CLI evolve rapidly and may not be well-represented in base LLM training data. Librarian agent provides:
 - Real-time access to current documentation
 - 98.7% token savings through local filtering
+- Cost-effective processing (Haiku model)
 - Benefits all three user groups and this plugin's development
 - See [ADR-0003](docs/adrs/adr-0003-use-context7-mcp-for-documentation-access.md) for rationale
 
@@ -76,7 +85,7 @@ relevant = [d for d in python_docs.get("snippets", []) if "3.14" in str(d)]
 | Skills | Reusable procedures with context | Sonnet | "Create port following pattern" |
 | Slash Commands | User-facing workflow shortcuts | Routing | /taew-init, /taew-port |
 | Scripts | Validation, verification | Local | make test, type checking |
-| Sub-agents | Delegated boilerplate tasks | Haiku | Generate adapter scaffolding |
+| Sub-agents | Delegated boilerplate tasks | Haiku | Librarian (docs), adapter scaffolding |
 | Config | Model selection, preferences | N/A | Which model for what task |
 
 **Key principle**: Each layer reduces token waste at the layer above.
