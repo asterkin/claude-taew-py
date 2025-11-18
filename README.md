@@ -1,3 +1,5 @@
+![claude-taew-py](docs/images/banner.jpg)
+
 # claude-taew-py
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -6,6 +8,8 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-CLI-5A67D8.svg)](https://code.claude.com/)
 
 Claude Code CLI plugin for AI-assisted development with [taew-py](https://github.com/asterkin/taew-py) Ports & Adapters foundation library.
+
+The name **taew** comes from the Elvish word for "socket" - a [programmable port](https://www.elfdict.com/w/taew) that adapts to different needs.
 
 ## Quick Start
 
@@ -41,7 +45,7 @@ claude plugin install asterkin/claude-taew-py
 
 This plugin supports:
 - **Application developers** building software with taew-py
-- **Adapter developers** creating 3rd-party technology integrations
+- **Adapter developers** creating 3rd-party technology adapters
 - **Core maintainers** contributing to taew-py itself
 
 For detailed use cases and philosophy, see [VISION.md - Target Users & Use Cases](VISION.md#target-users--use-cases).
