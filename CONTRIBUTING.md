@@ -88,8 +88,7 @@ This project follows the self-contained skills pattern and strict documentation 
 **Quick reference**:
 ```
 claude-taew-py/
-├── .claude/             # Claude Code configurations
-│   └── skills/          # Self-contained skills (scripts + templates)
+├── .claude/             # Claude Code tools and configurations
 ├── docs/adrs/
 │   └── README.md        # Architecture Decision Records catalog
 ├── CLAUDE.md            # AI operational directives (token-optimized)
