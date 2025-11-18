@@ -13,26 +13,13 @@ The name **taew** comes from the Elvish word for "socket" - a [programmable port
 
 ## Quick Start
 
-### Installation
-```bash
-# Via Claude Code CLI (when supported)
-claude plugin install asterkin/claude-taew-py
-
-# Or via slash command in Claude Code
-/plugin install asterkin/claude-taew-py
-```
-
-### Basic Usage
-```bash
-# Create new taew-py application
-"Create new taew-py application hello-taew-py. Description: Hello World demo"
-
-# Query documentation
-/doc-query "Python 3.14 match statement"
-
-# Create architecture decision record
-/adr "Use PostgreSQL for persistent storage"
-```
+> **🚧 Under Construction**
+>
+> Plugin distribution and installation mechanisms are under development. Current skills (doc-query, add-doc, adr) are functional in development mode.
+>
+> **To try now:** See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
+>
+> **Roadmap:** See [VISION.md](VISION.md) for planned features
 
 ## Documentation
 
