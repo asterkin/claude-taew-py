@@ -1,6 +1,9 @@
-# ADR Creation Skill
+---
+name: adr
+description: Create Architecture Decision Records (ADRs) following project standards. Guides template usage, process, and best practices for documenting architecturally significant decisions.
+---
 
-## Description
+# ADR Creation Skill
 
 Guides the creation of Architecture Decision Records (ADRs) following project standards. Provides template, process guidance, and best practices for documenting architecturally significant decisions.
 
@@ -23,7 +26,7 @@ Invoke this skill when:
 
 ### Step 2: Create ADR File
 
-1. Use the template below (also available at `.claude/skills/adr/templates/adr-template.md`)
+1. Use the template at `.claude/skills/adr/templates/adr-template.md`
 2. Name the file: `adr-NNNN-brief-descriptive-title.md`
 3. Place in: `docs/adrs/`
 
@@ -46,66 +49,6 @@ The automated script saves tokens by handling mechanical TOC updates without AI 
 
 - Update CLAUDE.md if the decision affects AI context
 - Update README.md if the decision affects users/contributors
-
-## ADR Template
-
-```markdown
-# ADR-NNNN: [Brief Title]
-
-**Status:** [Proposed | Accepted | Deprecated | Superseded by ADR-XXXX]
-
-## Context
-
-[Describe the problem, situation, or forces that led to this decision. Include:
-- What architectural challenge or question prompted this decision?
-- What constraints or requirements exist?
-- What are the key stakeholders or affected components?
-- Why is this decision architecturally significant?]
-
-## Decision
-
-[State the decision clearly and concisely. Include:
-- What approach was chosen?
-- Key requirements or principles guiding the decision
-- Phased implementation plan (if applicable)
-- Any specific patterns, tools, or conventions adopted]
-
-## Consequences
-
-### Positive
-
-[What benefits does this decision provide?
-- Improved capabilities
-- Better alignment with goals
-- Reduced complexity or risk]
-
-### Negative
-
-[What drawbacks or costs does this decision introduce?
-- Additional overhead or complexity
-- Limitations or constraints
-- Trade-offs accepted]
-
-### Neutral
-
-[Other implications worth noting:
-- Things that could be positive or negative depending on context
-- Cultural or process changes required
-- Areas requiring ongoing attention]
-
-## References
-
-[Optional: Links to related ADRs, external articles, documentation, or discussions]
-
-**Link Format Examples**:
-- Other ADRs: `[ADR-NNNN: Title](adr-NNNN-filename.md)`
-- Project docs: `[README.md - Section](../../README.md#section-anchor)`
-- Skills: `[Skill Name](../../.claude/skills/skill-name/SKILL.md)`
-- Scripts: `[Script Name](../../scripts/script-name.py)`
-- External: `[Article Title](https://example.com/article)`
-
-**Note**: Use proper markdown links for navigation, not plain text references.
-```
 
 ## Best Practices
 
