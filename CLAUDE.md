@@ -2,46 +2,21 @@
 
 Claude Code CLI plugin for AI-assisted development with taew-py Ports & Adapters foundation library.
 
+## Critical Instructions
+
+**BEFORE WORKING ON TASKS:**
+
+1. **Strategic context?** → See [VISION.md](VISION.md) for project philosophy, use cases, and roadmap
+2. **File organization?** → See [ADR-0004: Project Structure and Documentation Standards](docs/adrs/adr-0004-project-structure-and-documentation-standards.md)
+3. **Python standards?** → See [ADR-0005: Python Code Standards](docs/adrs/adr-0005-python-code-standards.md)
+
 ## Project Context
 
 **taew-py** is a Python 3.14+ foundation library that makes Ports & Adapters (Hexagonal Architecture) natural and fast, enabling rapid development of Minimal Evolvable Products (MEPs) for early-stage startups.
 
 **claude-taew-py** is an AI-native plugin that teaches Claude Code how to scaffold and develop taew-py applications and 3rd party technology adapters as well as maintaining taew-py itself efficiently.
 
-## Strategic Background
-
-> For historical context and rationale behind architectural decisions, see [Architecture Decision Records (ADRs)](docs/adrs/README.md)
-
-### Use Cases This Plugin Must Support
-
-1. **Application Development**
-   - Scaffolding new taew-py projects
-   - Creating domain models, ports, workflows, adapters
-   - CLI-first workflow automation
-
-2. **3rd-Party Adapter Development**
-   - Generating adapter skeletons for new technologies (AWS, GCP, PostgreSQL, etc.)
-   - Following taew-py adapter patterns and conventions
-
-3. **Core Library Maintenance**
-   - Adding new stdlib adapters to taew-py
-   - Maintaining consistency with existing patterns
-   - All skills should work equally for apps, adapters, and core
-
-**Implication**: Generated code and workflows must be reusable across all three contexts.
-
-> For taew-py architectural principles, see [Core Philosophy](README.md#core-philosophy) in README.md
-
-## AI-Native Implementation
-
-> For strategic context and evolution path, see [Why AI-Native?](README.md#why-ai-native) in README.md
-
-This plugin implements AI-native tooling through complementary mechanisms:
-- **Skills**: Reusable procedures with architectural context (Sonnet)
-- **Slash commands**: User-facing workflow shortcuts
-- **Sub-agents**: Boilerplate generation (cost-optimized with Haiku)
-- **Scripts**: Validation without AI tokens
-- **Documentation Access**: Context7 code execution for up-to-date Python 3.14+ and Claude Code CLI documentation
+For detailed use cases and architectural philosophy, see [VISION.md - Target Users & Use Cases](VISION.md#target-users--use-cases) and [VISION.md - AI-Native Architecture](VISION.md#ai-native-architecture).
 
 ## Tool Documentation Access (CRITICAL)
 
@@ -72,63 +47,31 @@ Training data may be outdated for:
 
 Context7 provides **real-time access** to current documentation.
 
-See [ADR-0003](docs/adrs/adr-0003-use-context7-for-documentation-access.md) for architectural rationale.
+See [ADR-0003](docs/adrs/adr-0003-use-context7-mcp-for-documentation-access.md) for architectural rationale.
 
-## Responsibility Matrix
+## Python Code Standards - Quick Reference
 
-| Component | Purpose | Model | Example |
-|-----------|---------|-------|---------|
-| CLAUDE.md (this file) | Static architecture knowledge | N/A | Core patterns, design principles |
-| Skills | Reusable procedures with context | Sonnet | doc-query, adr, add-doc |
-| Slash Commands | User-facing workflow shortcuts | Routing | /taew-init, /taew-port |
-| Scripts | Validation, verification | Local | update-adr-toc, query, list-sources |
-| Sub-agents | Delegated boilerplate tasks | Haiku | Adapter scaffolding (future) |
-| Config | Model selection, preferences | N/A | .claude/doc-sources.toml |
+See [ADR-0005: Python Code Standards](docs/adrs/adr-0005-python-code-standards.md) for detailed guidelines.
 
-**Key principle**: Each layer reduces token waste at the layer above.
+**Critical reminders** (most commonly violated):
 
-## Python Code Standards
+1. **Modern type hints**: Use `list[str]`, not `List[str]` (Python 3.9+ built-in types)
+2. **Union types**: Use `str | None`, not `Optional[str]`
+3. **Comparison methods**: Type parameter as `object`, use type guards, return `NotImplemented`
+4. **Executable scripts**: Start with `#!/usr/bin/env python3` + `chmod +x`
+5. **Encapsulation**: Keep utilities with consumers (`.claude/skills/*/scripts/`)
+6. **Templates**: Extract to separate files (`.claude/skills/*/templates/`)
 
-When writing Python code for this project:
+## Project Structure - Quick Reference
 
-### 1. Type Hints - Use Modern Built-in Types (Python 3.9+)
-- ✅ `list[str]`, `dict[str, int]`, `tuple[int, ...]`
-- ❌ `List[str]`, `Dict[str, int]`, `Tuple[int, ...]` (typing module imports)
-- ✅ `str | None`
-- ❌ `Optional[str]`
+See [ADR-0004: Project Structure and Documentation Standards](docs/adrs/adr-0004-project-structure-and-documentation-standards.md) for detailed guidelines.
 
-### 2. Prefer Comprehensions Over Imperative Loops
-- ✅ `[x for x in items if condition]`
-- ❌ `result = []; for x in items: if condition: result.append(x)`
+**Critical reminders**:
 
-### 3. Type Safety - Code Must Pass Pylance Strict Mode
-- Always type comparison method parameters: `def __lt__(self, other: object) -> bool:`
-- Use type guards: `if isinstance(other, MyClass):`
-- Return `NotImplemented` for comparison operators when types don't match
-- Explicit type narrowing: Use `if x is not None:` instead of `if x:`
-
-### 4. Executable Scripts - Mark with Shebang + chmod
-- Start with: `#!/usr/bin/env python3`
-- Make executable: `chmod +x script.py`
-- Invoke as: `./script.py` (not `python script.py`)
-- Rationale: Self-documenting, portable, consistent with hooks
-
-### 5. Encapsulation - Keep Utilities with Their Consumers
-- ✅ `.claude/skills/my-skill/scripts/helper.py`
-- ❌ `scripts/my-skill-helper.py` (pollutes project root)
-- Rationale: Skills are self-contained, portable modules
-
-### 6. Templates - Extract Formatting from Logic
-- Use separate template files for formatted outputs
-- Keep business logic in Python, presentation in templates
-- Example: `.claude/skills/adr/templates/adr-template.md`
-
-## Project Structure Philosophy
-
-This plugin should mirror taew-py's philosophy at the meta-level:
-- Core patterns are technology-neutral
-- Implementation details are adapters
-- Claude integration itself is "just another adapter layer"
+1. **Skills are self-contained**: All scripts/templates live in `.claude/skills/<name>/`
+2. **Documentation hierarchy**: README → VISION, CONTRIBUTING, ADRs → CLAUDE (leaf node)
+3. **No circular refs**: CLAUDE.md points to VISION/ADRs, but they don't point back
+4. **Token budgets**: CLAUDE.md (~50-70 lines), README (~30-40 lines), VISION (unbounded)
 
 ---
 

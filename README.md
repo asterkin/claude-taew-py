@@ -5,66 +5,63 @@
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-blue.svg)](https://code.claude.com/)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-CLI-5A67D8.svg)](https://code.claude.com/)
 
-Claude Code CLI plugin for AI-assisted development with taew-py Ports & Adapters foundation library.
+Claude Code CLI plugin for AI-assisted development with [taew-py](https://github.com/asterkin/taew-py) Ports & Adapters foundation library.
+
+## Quick Start
+
+### Installation
+```bash
+# Via Claude Code CLI (when supported)
+claude plugin install asterkin/claude-taew-py
+
+# Or via slash command in Claude Code
+/plugin install asterkin/claude-taew-py
+```
+
+### Basic Usage
+```bash
+# Create new taew-py application
+"Create new taew-py application hello-taew-py. Description: Hello World demo"
+
+# Query documentation
+/doc-query "Python 3.14 match statement"
+
+# Create architecture decision record
+/adr "Use PostgreSQL for persistent storage"
+```
+
+## Documentation
+
+- **[VISION.md](VISION.md)** - Strategic goals, project philosophy, and roadmap
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development setup and contribution guidelines
+- **[docs/adrs/](docs/adrs/)** - Architecture decision records
+- **[CLAUDE.md](CLAUDE.md)** - AI assistant operational instructions
 
 ## Who Is This For?
 
-This plugin is designed for:
+This plugin supports:
 - **Application developers** building software with taew-py
 - **Adapter developers** creating 3rd-party technology integrations
 - **Core maintainers** contributing to taew-py itself
 
-## Why AI-Native?
-
-### The Problem
-
-New libraries face a vicious cycle in the AI agent era: they're not in LLM training data, so AI agents don't suggest them, so nobody uses them, so they never get into training data.
-
-### The Solution
-
-Ship AI-native tooling alongside the library itself:
-- **Skills**: Reusable procedures with architectural context
-- **Slash commands**: User-facing workflow shortcuts
-- **Sub-agents**: Cost-optimized boilerplate generation
-- **Scripts**: Validation without burning AI tokens
-
-This makes taew-py discoverable and usable through its own AI affordances, not by waiting for training data inclusion.
-
-### Evolution Path: Language-Specific → Language-Agnostic
-
-**Phase 1 (Now): claude-taew-py**
-- Python-specific plugin with concrete capabilities
-- Bottom-up approach: deliver reliable, testable value first
-- Establish patterns for AI-assisted Ports & Adapters development
-
-**Phase 2 (Future): claude-taew-ts, claude-taew-*...**
-- Additional language implementations as demand emerges
-- Each maintains same architectural philosophy in different ecosystems
-- Cross-language learning and pattern refinement
-
-**Phase 3 (Vision): claude-taew orchestrator**
-- Language-agnostic meta-plugin
-- AI agent recommends implementation language based on application specs
-- Polyglot project generation and coordination
-- Specification-first development: focus on "what" not "how"
-
-This follows **Promise Theory** (bottom-up capabilities) and **Meta-system Transition** (abstract only after multiple concrete implementations exist).
+For detailed use cases and philosophy, see [VISION.md - Target Users & Use Cases](VISION.md#target-users--use-cases).
 
 ## Core Philosophy
 
-Understanding taew-py's architectural principles:
-
+taew-py architectural principles:
 - **taew-py core**: Stays at Python stdlib level (language extension)
 - **3rd-party adapters**: Separate projects (AWS, GCP, PostgreSQL, etc.)
 - **Dynamic-first**: Dynamic wiring by default, static as deployment optimization
 - **CLI-first**: Easiest path to explore workflows, then extend to TUI/Web/etc.
 
-## Architecture
-
-For detailed rationale behind architectural decisions, see [Architecture Decision Records (ADRs)](docs/adrs/README.md). These documents capture the "why" behind design choices and enable Claude Code to answer questions about the project's evolution.
+For AI-native architecture and evolution path, see [VISION.md - AI-Native Architecture](VISION.md#ai-native-architecture).
 
 ## Contributing
 
 Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, including how to configure the required Context7 API key for accessing up-to-date Python 3.14+ and Claude Code CLI documentation.
 
 Please note that this project is released with a [Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+## License
+
+[MIT](LICENSE)

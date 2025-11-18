@@ -20,6 +20,60 @@ Enable rapid, AI-assisted development of taew-py applications and adapters throu
 
 ---
 
+## AI-Native Architecture
+
+### The Problem
+
+New libraries face a vicious cycle in the AI agent era: they're not in LLM training data, so AI agents don't suggest them, so nobody uses them, so they never get into training data.
+
+### The Solution
+
+This plugin implements AI-native tooling through complementary mechanisms:
+- **Skills**: Reusable procedures with architectural context (Sonnet)
+- **Slash commands**: User-facing workflow shortcuts
+- **Sub-agents**: Boilerplate generation (cost-optimized with Haiku)
+- **Scripts**: Validation without AI tokens
+- **Documentation Access**: Context7 code execution for up-to-date Python 3.14+ and Claude Code CLI documentation
+
+This makes taew-py discoverable and usable through its own AI affordances, not by waiting for training data inclusion.
+
+### Responsibility Matrix
+
+Each component serves a distinct purpose:
+
+| Component | Purpose | Model | Example |
+|-----------|---------|-------|---------|
+| CLAUDE.md | Static architecture knowledge | N/A | Core patterns, design principles |
+| Skills | Reusable procedures with context | Sonnet | doc-query, adr, add-doc |
+| Slash Commands | User-facing workflow shortcuts | Routing | /taew-init, /taew-port |
+| Scripts | Validation, verification | Local | update-adr-toc, query, list-sources |
+| Sub-agents | Delegated boilerplate tasks | Haiku | Adapter scaffolding (future) |
+| Config | Model selection, preferences | N/A | .claude/doc-sources.toml |
+
+**Key principle**: Each layer reduces token waste at the layer above.
+
+### Evolution Path: Language-Specific → Language-Agnostic
+
+**Phase 1 (Now): claude-taew-py**
+- Python-specific plugin with concrete capabilities
+- Bottom-up approach: deliver reliable, testable value first
+- Establish patterns for AI-assisted Ports & Adapters development
+
+**Phase 2 (Future): claude-taew-ts, claude-taew-*...**
+- Additional language implementations as demand emerges
+- Each maintains same architectural philosophy in different ecosystems
+- Cross-language learning and pattern refinement
+
+**Phase 3 (Vision): claude-taew orchestrator**
+- Language-agnostic meta-plugin
+- AI agent recommends implementation language based on application specs
+- Polyglot project generation and coordination
+- Specification-first development: focus on "what" not "how"
+
+This follows **Promise Theory** (bottom-up capabilities) and **Meta-system Transition** (abstract only after multiple concrete implementations exist).
+
+---
+
 ## Target Users & Use Cases
 
 ### 1. Application Developers
@@ -457,12 +511,7 @@ dependencies = [
 
 **Decision**: TBD timing and priority
 
-### 5. Multi-Language Support
-**Beyond Python**: Rust, TypeScript, Go implementations of taew
-
-**Implications**: Separate repos (e.g., `claude-taew-rust`)
-
-**Not in scope** for claude-taew-py
+**Note**: Multi-language support strategy is covered in [AI-Native Architecture](#ai-native-architecture) section.
 
 ---
 

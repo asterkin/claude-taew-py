@@ -2,6 +2,22 @@
 
 Thank you for your interest in contributing to claude-taew-py! This guide will help you get started.
 
+## Documentation Guide
+
+This project uses a structured documentation architecture to support multiple audiences and optimize for AI-assisted development:
+
+- **[CLAUDE.md](CLAUDE.md)** - Operational instructions for AI assistant (critical directives, tool activation, coding standards)
+- **[VISION.md](VISION.md)** - Strategic goals, project philosophy, long-term roadmap
+- **[docs/adrs/](docs/adrs/)** - Architecture decision records (detailed rationales)
+- **[README.md](README.md)** - End-user quick start and navigation
+
+**For contributors**: [CLAUDE.md](CLAUDE.md) contains the operational guidelines that govern AI-assisted development in this project. Review it to understand:
+- Python coding standards (type hints, comprehensions, executable scripts)
+- Project structure patterns (skills organization, utility encapsulation)
+- Tool documentation access (Context7 integration)
+
+See [ADR-0004: Project Structure and Documentation Standards](docs/adrs/adr-0004-project-structure-and-documentation-standards.md) for detailed rationale.
+
 ## Setup
 
 ### 1. Clone the Repository
@@ -83,9 +99,10 @@ claude-taew-py/
 ### Making Changes
 
 1. Create a feature branch from `main`
-2. Make your changes following the project's architecture principles (see CLAUDE.md)
-3. Test your changes with Claude Code
-4. Submit a pull request
+2. Make your changes following the project's architecture principles (see [CLAUDE.md](CLAUDE.md) and [ADRs](docs/adrs/))
+3. Document significant architectural decisions (create ADRs using `/adr` or `doc-query` skill)
+4. Test your changes with Claude Code
+5. Submit a pull request
 
 ### Testing Skills and Commands
 

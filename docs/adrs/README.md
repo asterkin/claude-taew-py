@@ -18,7 +18,9 @@ ADRs serve several critical functions:
 | [ADR-0000](adr-0000-use-adrs-to-document-architecturally-significant-decisions.md) | Use ADRs to Document Architecturally Significant Decisions | Accepted |
 | [ADR-0001](adr-0001-use-ai-assisted-tooling-for-adr-creation.md) | Use AI-Assisted Tooling for ADR Creation | Accepted - Phase 1 (Skill) - 2025-01-16 |
 | [ADR-0002](adr-0002-create-claude-code-cli-plugin-for-taew-development.md) | Create Claude Code CLI Plugin for taew Development | Accepted |
-| [ADR-0003](adr-0003-use-context7-mcp-for-documentation-access.md) | Use Context7 for Documentation Access | Accepted - Evolved to Code Execution Approach (2025-01-16) |
+| [ADR-0003](adr-0003-use-context7-mcp-for-documentation-access.md) | Use Context7 for Documentation Access | Accepted - Implemented as Skills with TOML Configuration (2025-01-17) |
+| [ADR-0004](adr-0004-project-structure-and-documentation-standards.md) | Project Structure and Documentation Standards | Accepted |
+| [ADR-0005](adr-0005-python-code-standards.md) | Python Code Standards and Style Guide | Accepted |
 
 ---
 
